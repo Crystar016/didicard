@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>专业律师数字名片 - Apple设计风</title>
+<style>
+  /* 全局重置与苹果原生字体栈 */
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* 强制使用苹果原生字体，达到 iOS 级排版效果 */
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+    
+    /* 这里直接调用您附件中的图片，并加上一个极其相似的 CSS 渐变作为备用 */
+    background-color: #e5f0f3;
+    background-image: url('好看的磨砂质感背景图✨✨✨_4_变强的心脏_来自小红书网页版.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  /* 名片主体 - iOS Thin Material 材质 */
+  .card {
+    width: 100%;
+    max-width: 360px;
+    aspect-ratio: 9 / 16;
+    /* 极度通透的半透明白底 */
+    background: rgba(255, 255, 255, 0.25);
+    /* iOS 级别的强模糊效果 */
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    /* 极细的白色高光边框，模拟玻璃边缘 */
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    /* 苹果标志性的大圆角 */
+    border-radius: 32px;
+    /* 极其柔和的弥散阴影，不做作 */
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+    padding: 40px 30px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* 顶部：律所名称 */
+  .company {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1d1d1f; /* 苹果经典深空灰色 */
+    letter-spacing: 1px;
+    margin-bottom: auto;
+  }
+
+  /* 中上部：个人信息 */
+  .profile {
+    margin-bottom: 20px;
+  }
+  .name {
+    font-size: 34px;
+    font-weight: 600; /* 加粗，类似 iOS 标题 */
+    color: #1d1d1f;
+    margin: 0 0 6px 0;
+    letter-spacing: 2px;
+  }
+  .title {
+    font-size: 15px;
+    color: #515154; /* 苹果辅助文字灰 */
+    font-weight: 400;
+  }
+  
+  /* 视觉分割线 - 极简 */
+  .divider {
+    width: 100%;
+    height: 1px;
+    background: rgba(0, 0, 0, 0.08);
+    margin: 20px 0 25px 0;
+  }
+
+  /* 中下部：联系方式列表 */
+  .info {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-bottom: auto;
+  }
+  .info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .icon {
+    font-size: 16px;
+    opacity: 0.8;
+    margin-top: 2px;
+  }
+  .text-content {
+    display: flex;
+    flex-direction: column;
+  }
+  .text-label {
+    font-size: 13px;
+    color: #86868b; /* iOS 列表副标题灰 */
+    margin-bottom: 2px;
+  }
+  .text-value {
+    font-size: 14px;
+    color: #1d1d1f;
+    font-weight: 500;
+    line-height: 1.5;
+  }
+  /* 执业证号特殊加粗加大 */
+  .text-value.license {
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  /* 底部：微信二维码区域 */
+  .qr-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 20px;
+    padding: 15px 20px;
+    background: rgba(255, 255, 255, 0.4); /* 内部小卡片效果 */
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+  }
+  .qr-text {
+    font-size: 13px;
+    color: #1d1d1f;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+  .qr-text span {
+    font-size: 11px;
+    color: #86868b;
+    font-weight: 400;
+  }
+  
+  /* 二维码按钮 */
+  .qr-box {
+    width: 60px;
+    height: 60px;
+    background: #ffffff;
+    border-radius: 14px; /* iOS 拟物圆角 */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #86868b;
+    font-size: 10px;
+    cursor: pointer;
+    transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1);
+    overflow: hidden;
+  }
+  .qr-box:active {
+    transform: scale(0.95); /* iOS 原生的点击缩放反馈 */
+  }
+  .qr-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* --- 苹果风 弹窗放大层 (Modal) --- */
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(15px); /* 背景高斯模糊 */
+    -webkit-backdrop-filter: blur(15px);
+    z-index: 999;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .modal.show {
+    display: flex;
+    opacity: 1;
+  }
+  .modal-content {
+    width: 280px;
+    height: 280px;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 32px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* 苹果标志性的缩放弹出动画 */
+    transform: scale(1.1);
+    transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1); 
+  }
+  .modal.show .modal-content {
+    transform: scale(1);
+  }
+  .modal-content img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 16px;
+  }
+  .close-hint {
+    color: #86868b;
+    font-size: 13px;
+    margin-top: 20px;
+    font-weight: 400;
+  }
+</style>
+</head>
+<body>
+
+  <div class="card">
+    <div class="company">上海星妙律师事务所</div>
+    
+    <div class="profile">
+      <h1 class="name">秦良柱</h1>
+      <div class="title">合伙人/专职律师</div>
+    </div>
+    
+    <div class="divider"></div>
+    
+    <div class="info">
+      <div class="info-item">
+        <span class="icon">⚖️</span>
+        <div class="text-content">
+          <span class="text-label">执业证号</span>
+          <span class="text-value license">11101202310123456</span>
+        </div>
+      </div>
+      <div class="info-item">
+        <span class="icon">📱</span>
+        <div class="text-content">
+          <span class="text-label">手机号码</span>
+          <span class="text-value">172 7766 2230</span>
+        </div>
+      </div>
+      <div class="info-item">
+        <span class="icon">💬</span>
+        <div class="text-content">
+          <span class="text-label">微信</span>
+          <span class="text-value">Heliangxiaofa</span>
+        </div>
+      </div>
+      <div class="info-item">
+        <span class="icon">✉️</span>
+        <div class="text-content">
+          <span class="text-label">电子邮箱</span>
+          <span class="text-value">qinliangzhu@starwiselaw.com</span>
+        </div>
+      </div>
+      <div class="info-item">
+        <span class="icon">📍</span>
+        <div class="text-content">
+          <span class="text-label">律所地址</span>
+          <span class="text-value">上海市浦东新区<br>前滩世贸中心1期 B座 3楼 B18室</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="qr-section">
+      <div class="qr-text">
+        微信扫一扫<br>
+        <span>点击放大二维码</span>
+      </div>
+      <div class="qr-box" onclick="openModal()">
+        <img id="qrcodeImage" src="qrcode.png" alt="微信二维码" onerror="this.style.display='none'; this.parentElement.innerHTML='QR'">
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="qrModal" onclick="closeModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <img id="modalQrcode" src="qrcode.png" alt="微信二维码" onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=\'width:100%;height:100%;background:#f5f5f7;border-radius:16px;\'></div>'">
+      <button id="saveBtn" onclick="saveQRCode()" style="margin-top: 20px; padding: 10px 20px; background: #007aff; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer;">保存二维码</button>
+    </div>
+  </div>
+
+  <script>
+    const modal = document.getElementById('qrModal');
+
+    function openModal() {
+      modal.style.display = 'flex';
+      setTimeout(() => {
+        modal.classList.add('show');
+      }, 10);
+    }
+
+    function closeModal() {
+      modal.classList.remove('show');
+      setTimeout(() => {
+        modal.style.display = 'none';
+      }, 300);
+    }
+
+    function saveQRCode() {
+      const img = document.getElementById('modalQrcode');
+      if (img.src) {
+        // 创建一个临时链接用于下载
+        const link = document.createElement('a');
+        link.href = img.src;
+        link.download = 'qrcode.png';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        // 显示保存成功提示
+        const saveBtn = document.getElementById('saveBtn');
+        const originalText = saveBtn.textContent;
+        saveBtn.textContent = '保存成功';
+        saveBtn.style.background = '#34c759';
+        
+        // 2秒后恢复按钮状态
+        setTimeout(() => {
+          saveBtn.textContent = originalText;
+          saveBtn.style.background = '#007aff';
+        }, 2000);
+      }
+    }
+  </script>
+
+</body>
+</html>
